@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tosigos Residency Portal</title>
+  <style>
+    body { font-family: system-ui, Arial; line-height: 1.5; padding: 20px; background:#f8f9fa; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    h1 { margin:0; }
+    .badge { padding:6px 10px; border-radius:8px; background:#eee; }
+    .card { border:1px solid #ddd; padding:20px; border-radius:12px; background:#fff; max-width:800px; margin:auto; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .edit-button { margin-top:12px; margin-right:10px; }
+    .no-select { user-select:none; -webkit-user-select:none; }
+    .view-only input[disabled], .view-only textarea[disabled], .view-only select[disabled] {
+      background:#f1f1f1; color:#555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏨 Tosigos Residency</h1>
+    <div>
+      Role:
+      <select id="roleSelect">
+        <option value="guest">Guest</option>
+        <option value="staff">Staff</option>
+        <option value="admin">Admin</option>
+      </select>
+      <span id="roleBadge" class="badge">Guest</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="mainContent">
+      <h2>Room Details</h2>
+      <p class="editable" contenteditable="true">
+        Room 204 — Executive Suite. Notes: Complimentary breakfast included.
+      </p>
+
+      <h3>Occupant Info</h3>
+      <form>
+        <label>
+          Name:
+          <input type="text" value="Ms. Ananya Kapoor">
+        </label><br><br>
+        <label>
+          Check-in:
+          <input type="date" value="2025-09-01">
+        </label><br><br>
+        <label>
+          Notes:
+          <textarea>Requires airport pickup.</textarea>
+        </label><br><br>
+        <button type="button" class="edit-button">Save</button>
+        <button type="button" class="edit-button">Edit</button>
+      </form>
+    </section>
+
+    <p style="text-align:center; margin-top:20px; font-size:0.9rem; color:#555;">
+      Right-click is disabled & page is view-only for Staff and Admin roles.
+    </p>
+  </main>
+
+  <script>
+    const roleSelect = document.getElementById('roleSelect');
+    const roleBadge = document.getElementById('roleBadge');
+    const mainContent = document.getElementById('mainContent');
+    const VIEW_ONLY_ROLES = new Set(['staff','admin']);
+    let viewOnlyActive = false;
+
+    function toggleViewOnly(enable) {
+      viewOnlyActive = enable;
+      if (enable) {
+        // disable right-click
+        document.addEventListener('contextmenu', preventContext);
+        // disable form inputs
+        mainContent.classList.add('view-only','no-select');
+        mainContent.querySelectorAll('input, textarea, select').forEach(el=>el.disabled=true);
+        mainContent.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+        mainContent.querySelectorAll('.edit-button').forEach(btn=>btn.style.display='none');
+      } else {
+        document.removeEventListener('contextmenu', preventContext);
+        mainContent.classList.remove('view-only','no-select');
+        mainContent.querySelectorAll('input, textarea, select').forEach(el=>el.disabled=false);
+        mainContent.querySelectorAll('.edit-button').forEach(btn=>btn.style.display='inline-block');
+        mainContent.querySelectorAll('.editable').forEach(el=>el.setAttribute('contenteditable','true'));
+      }
+    }
+    function preventContext(e){ if(viewOnlyActive) e.preventDefault(); }
+
+    roleSelect.addEventListener('change', () => {
+      const role = roleSelect.value;
+      roleBadge.textContent = role.charAt(0).toUpperCase()+role.slice(1);
+      toggleViewOnly(VIEW_ONLY_ROLES.has(role));
+    });
+
+    // initial state
+    toggleViewOnly(false);
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+    :root{
+      --bg-1: #05060a;
+      --panel: #0e1116;
+      --muted: #9aa6b2;
+      --accent: #00f0ff; /* default LED color */
+      --glow-size: 20px;
+      --ambient-blur: 28px;
+      --led-intensity: 0.9; /* 0 - 1 */
+    }
+
+    /* Basic page */
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at 20% 10%, #071226 0%, #00040a 40%, var(--bg-1) 100%);
+      color: #e6f0f6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:40px;
+    }
+
+    header.site-hero{
+      padding:36px 18px;
+      text-align:center;
+    }
+    header.site-hero h1{
+      margin:0;
+      font-size:clamp(1.6rem, 2.5vw, 2.6rem);
+      letter-spacing:0.6px;
+      font-weight:700;
+      color: #f5fbff;
+      text-shadow: 0 6px 30px rgba(0,0,0,0.6);
+    }
+    header.site-hero p.lead{
+      margin-top:8px;
+      color:var(--muted);
+    }
+
+    /* Panel containing controls and gallery */
+    .panel {
+      max-width:1200px;
+      margin: 20px auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* Controls row */
+    .controls {
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .control-box {
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      padding:10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .control-box strong { color:#e9fbff; font-weight:600; margin-right:6px; }
+
+    /* Gallery grid */
+    .gallery-grid {
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:16px;
+    }
+
+    .gallery-item {
+      position:relative;
+      overflow:hidden;
+      border-radius:12px;
+      cursor:zoom-in;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      transition: transform 300ms ease, box-shadow 300ms ease;
+      outline: none;
+    }
+
+    .gallery-item img {
+      display:block;
+      width:100%;
+      height:230px;
+      object-fit:cover;
+      border-radius:12px;
+      transition: transform 400ms cubic-bezier(.2,.9,.2,1), filter 300ms ease;
+      backface-visibility: hidden;
+    }
+
+    /* Neon glow controlled by CSS variable */
+    .glow { /* apply to gallery-item to show glow */
+      box-shadow:
+        0 8px 30px rgba(0,0,0,0.6),
+        0 0 calc(var(--glow-size)) rgba(0,0,0,0.18),
+        0 0 calc(calc(var(--glow-size) * 1.6)) rgba(0,0,0,0.12);
+    }
+
+    /* Colored outer LED glow */
+    .glow::before {
+      content: "";
+      position:absolute;
+      inset:0;
+      border-radius:12px;
+      pointer-events:none;
+      box-shadow:
+        0 0 calc(var(--glow-size)) color-mix(in srgb, var(--accent) calc(var(--led-intensity) * 100%), transparent);
+      opacity:0.9;
+      filter: blur(calc(var(--ambient-blur) / 2));
+      z-index:0;
+      transition: box-shadow 300ms ease, opacity 300ms ease;
+      mix-blend-mode: screen;
+    }
+
+    /* Ambient colored blur behind each image */
+    .gallery-item::after {
+      content:"";
+      position:absolute;
+      z-index:-1;
+      left:6%;
+      right:6%;
+      top:6%;
+      bottom:6%;
+      border-radius:14px;
+      background: var(--accent);
+      filter: blur(var(--ambient-blur));
+      opacity: calc(var(--led-intensity) * 0.18);
+      transition: opacity 300ms ease, transform 300ms ease;
+      transform: scale(1);
+      pointer-events:none;
+    }
+
+    /* Hover behavior: zoom image, bright glow and sweep */
+    .gallery-item:hover img, .gallery-item:focus img {
+      transform: scale(1.06);
+      filter: saturate(1.08) contrast(1.02);
+    }
+    .gallery-item:hover::after { opacity: calc(var(--led-intensity) * 0.26); transform: scale(1.03); }
+
+    /* Title overlay */
+    .gallery-caption {
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      z-index:2;
+      background: linear-gradient(90deg, rgba(0,0,0,0.65), rgba(255,255,255,0.02));
+      color:#fff;
+      padding:6px 10px;
+      border-radius:8px;
+      font-size:0.92rem;
+      backdrop-filter: blur(6px);
+      transform: translateY(6px);
+      transition: transform 250ms ease, opacity 250ms ease;
+      opacity:0.96;
+    }
+
+    .gallery-item:hover .gallery-caption, .gallery-item:focus .gallery-caption {
+      transform: translateY(0);
+    }
+
+    /* Sweep effect */
+    .gallery-item .sweep {
+      pointer-events:none;
+      position:absolute;
+      top:-40%;
+      left:-60%;
+      width:40%;
+      height:200%;
+      transform: skewX(-25deg);
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0) 100%);
+      transition: transform 700ms cubic-bezier(.2,.9,.2,1), left 700ms ease;
+      opacity:0;
+      z-index:2;
+    }
+
+    .gallery-item:hover .sweep, .gallery-item:focus .sweep {
+      left:120%;
+      opacity:1;
+      transition: left 650ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    /* Tiny indicator for active modes */
+    .mode-pill {
+      font-size:0.78rem;
+      padding:6px 8px;
+      border-radius:999px;
+      color: #06202a;
+      background: linear-gradient(90deg,#b4fff6, #b9f0ff);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align:center;
+      color:var(--muted);
+      margin-top:18px;
+      font-size:0.88rem;
+    }
+
+    /* Small responsive tweaks */
+    @media (max-width:480px){
+      .control-box { font-size:0.85rem; padding:8px; }
+      .gallery-item img { height:170px; }
+    }
+
+    /* --- Modes --- */
+    /* color cycling animation — uses CSS variables set by JS for gradient stops */
+    @keyframes ledCycle {
+      0% { --accent: #ff004f; }
+      10% { --accent: #ff8a00; }
+      25% { --accent: #ffd600; }
+      40% { --accent: #00f0ff; }
+      60% { --accent: #6b00ff; }
+      80% { --accent: #ff00d4; }
+      100% { --accent: #ff004f; }
+    }
+    .mode-cycle .gallery-item::after,
+    .mode-cycle .gallery-item::before {
+      animation: ledCycle 6s linear infinite;
+    }
+
+    /* pulse mode (breathe) */
+    @keyframes ledPulse {
+      0% { transform: scale(1); opacity: 0.12; }
+      50% { transform: scale(1.04); opacity: 0.28; }
+      100% { transform: scale(1); opacity: 0.12; }
+    }
+    .mode-pulse .gallery-item::after {
+      animation: ledPulse 3.5s ease-in-out infinite;
+    }
+
+    /* off state reduces glows */
+    .mode-off {
+      --led-intensity: 0;
+      --ambient-blur: 0px;
+      --glow-size: 0px;
+    }
+
+    /* keyboard focus visible */
+    .gallery-item:focus {
+      box-shadow: 0 0 0 4px rgba(0,240,255,0.08);
+      outline: none;
+      transform: translateY(-4px);
+    }
