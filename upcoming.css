@@ -7,9 +7,12 @@
 
 /* ============================= */
 /* Body & Background */
-body {
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(-45deg, #1e3c72, #2c5364, #0f2027, #203a43);
   background-size: 400% 400%;
@@ -37,7 +40,7 @@ header .brand {
   margin-top: 20px;
   opacity: 0;
   animation: fadeInDown 2s forwards;
-  color: #ffd700; /* Gold luxury accent */
+  color: #ffd700;
   text-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 45px rgba(255, 255, 255, 0.5);
 }
 
@@ -62,6 +65,7 @@ header img {
 .coming-container {
   margin-top: 80px;
   animation: fadeIn 2s ease-in-out forwards;
+  flex: 1; /* pushes footer down */
 }
 
 .coming-container .logo {
@@ -102,6 +106,7 @@ h1 {
 .countdown {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 30px;
   opacity: 0;
@@ -117,6 +122,7 @@ h1 {
   transition: transform 0.3s, box-shadow 0.3s;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
   font-family: 'Montserrat', sans-serif;
+  min-width: 80px;
 }
 
 .time-box:hover {
@@ -140,6 +146,7 @@ h1 {
 .notify-form {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
   opacity: 0;
   animation: fadeUp 2s forwards 2.5s;
@@ -183,7 +190,7 @@ h1 {
 /* ============================= */
 /* Footer */
 footer {
-  margin-top: 50px;
+  margin-top: auto; /* sticks at bottom */
   padding: 15px;
   background: rgba(0,0,0,0.5);
   border-top: 1px solid rgba(255,255,255,0.2);
@@ -203,4 +210,30 @@ footer {
 
 @keyframes fadeIn {
   to {opacity: 1;}
+}
+
+/* ============================= */
+/* Responsive Design */
+@media (max-width: 992px) {
+  h1 { font-size: 2.8rem; }
+  .subtitle { font-size: 1.2rem; }
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  .subtitle { font-size: 1rem; }
+  header .brand { font-size: 2.2rem; }
+  .coming-container .logo { width: 90px; }
+  .notify-form input { width: 220px; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.8rem; }
+  .subtitle { font-size: 0.9rem; }
+  header .brand { font-size: 1.9rem; flex-direction: column; gap: 6px; }
+  header img { width: 40px; }
+  .coming-container { margin-top: 50px; }
+  .time-box { padding: 12px 16px; font-size: 0.85rem; }
+  .notify-form input { width: 100%; }
+  .notify-form button { width: 100%; }
 }
