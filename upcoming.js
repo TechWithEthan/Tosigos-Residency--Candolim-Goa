@@ -1,11 +1,18 @@
+
 // Countdown Timer
 const countdown = () => {
-  const launchDate = new Date("Dec 31, 2025 23:59:59").getTime();
+  const launchDate = new Date("Sep 15, 2025 09:17:00").getTime();
   const now = new Date().getTime();
   const timeLeft = launchDate - now;
 
   if (timeLeft <= 0) {
     document.getElementById("countdown").innerHTML = "We Are Live!";
+    
+    // Redirect to homepage.html after 2 seconds
+    setTimeout(() => {
+      window.location.href = "homepage.html";
+    }, 2000);
+
     return;
   }
 
